@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "azurerm" {
-    resource_group_name  = "aavyay-rg"
-    storage_account_name = "aavyaystorage987325"
-    container_name       = "tfstate"
-    key                  = "dev.tfstate"
+   # resource_group_name  = "aavyay-rg"
+   # storage_account_name = "aavyaystorage987325"
+   # container_name       = "tfstate"
+  #  key                  = "dev.tfstate"
   }
 }
 
