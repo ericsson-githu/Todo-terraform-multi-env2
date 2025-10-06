@@ -7,8 +7,8 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "aavyay-rg"
-    storage_account_name = "aavyaystorage987321"
-    container_name       = "tfstate1"
+    storage_account_name = "aavyaystorage987325"
+    container_name       = "tfstate"
     key                  = "tev.tfstate"
   }
 }
