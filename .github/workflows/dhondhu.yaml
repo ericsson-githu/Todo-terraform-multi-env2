@@ -25,20 +25,21 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          working-directory: ./environments/dev
             
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: environments/dev
+        working-directory: ./environments/dev
         
       - name: Terraform Init
         shell: powershell
         working-directory: ./environments/dev
         run: |
            terraform init `
-            -backend-config="resource_group_name=${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" `
-            -backend-config="storage_account_name=${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" `
+            -backend-config="resource_group_name=${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" 
+            -backend-config="storage_account_name=${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" 
             -backend-config="container_name=${{ secrets.BACKEND_AZURE_CONTAINER_NAME }}" `
             -backend-config="key=dev.tfstate"
            
