@@ -1,35 +1,79 @@
-# This is a basic workflow to help you get started with Actions
+name: Terraform Dev Deployment
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+  push:
+    branches:
+      - main      
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+  
+jobs: 
+  terraform-init-plan:
+    runs-on: self-hosted
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+    
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: 2e5716e1-21ef-403b-8b39-fa79c7ae2f4a
+          tenant-id: ba820411-fb17-40b7-aa1e-e6bb2ba7b2da
+          subscription-id: c8ae0155-19b9-4306-a16f-ce3e1dab29f4
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+        working-directory: ./enviroments/dev
+        
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false  
+        working-directory: ./enviroments/dev
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./enviroments/dev     
+      
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+        working-directory: ./enviroments/dev
+        
+  terraform-apply:    
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main'
+    needs: terraform-init-plan
+    environment: dev
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+    
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+         client-id: dd1efe98-399e-4fb5-b5f4-2d0f0bfd525b
+         tenant-id: 90eaef6b-3882-4c51-8467-1155649bc19d
+         subscription-id: fbac4321-0f41-46f0-baea-f23a62385eb5 
+          
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false  
+        working-directory: ./enviroments/dev
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply --auto-approve
+        continue-on-error: true
+        working-directory: ./enviroments/dev
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
