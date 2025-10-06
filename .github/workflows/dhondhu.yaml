@@ -33,7 +33,7 @@ jobs:
         working-directory: environments/dev
         
       - name: Terraform Init
-        shell: pwsh
+        shell: powershell
         working-directory: environments/dev
         run: |
           terraform init \
