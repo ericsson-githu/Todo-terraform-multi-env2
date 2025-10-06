@@ -31,11 +31,11 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: environments/dev
+        working-directory: ./environments/dev
         
       - name: Terraform Init
         shell: powershell
-        working-directory: environments/dev
+        working-directory: ./environments/dev
         run: terraform init -input=false 
 
       - name: Terraform Validate
