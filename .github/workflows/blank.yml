@@ -19,9 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5.0.0
     
-      - name: Azure Login
-        shell: powershell
-        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+      - name: Azure Login via Federated Identity
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+           working-directory: environments/dev 
 
 
       - name: Terraform fmt
