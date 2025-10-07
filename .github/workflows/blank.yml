@@ -28,10 +28,10 @@ jobs:
           working-directory: environments/dev 
 
 
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
+      - name: Terraform Format
+        shell: powershell
+        run: terraform fmt -recursive
+
         working-directory: environments/dev 
         
       - name: Terraform Init
