@@ -9,7 +9,7 @@ terraform {
     resource_group_name  = "aavyay-rg"
     storage_account_name = "aavyaystorage987321"
     container_name       = "tfstate"
-    key                  = "tev.tfstate"
+    key                  = "terraform.tfstate"
   }
 }
 
